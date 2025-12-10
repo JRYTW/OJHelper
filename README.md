@@ -1,5 +1,9 @@
 # OJHelper - 校內 OJ 平台自動解題輔助工具
 
+<p align="center">
+  <img src="https://i.duk.tw/Ugpgad.png" alt="OJHelper" hight="160"/>
+</p>
+
 這是一個基於 Python 的 AI 自動化解題輔助程式，專為校內 OJ 平台設計。該工具使用 Selenium 網頁自動化技術與 AI 的能力，透過 CustomTkinter 製作出現代化的簡約 GUI 介面，實現從讀題、解題到提交的全自動化流程。
 
 -----
