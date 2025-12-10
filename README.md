@@ -1,6 +1,6 @@
 # OJHelper - 校內 OJ 平台自動解題輔助工具
 
-這是一個基於 Python 的 AI 自動化解題輔助程式，專為校內 OJ 平台設計。該工具使用 Selenium 網頁自動化技術與 Google Gemini 的生成能力，透過 CustomTkinter 製作出現代化的簡約 GUI 介面，實現從讀題、解題到提交的全自動化流程。
+這是一個基於 Python 的 AI 自動化解題輔助程式，專為校內 OJ 平台設計。該工具使用 Selenium 網頁自動化技術與 AI 的能力，透過 CustomTkinter 製作出現代化的簡約 GUI 介面，實現從讀題、解題到提交的全自動化流程。
 
 -----
 
@@ -10,7 +10,9 @@
 
 1.  **簡約 GUI 介面** 採用 9:16 手機比例設計，搭配柔和的色系與圓角佈局，提供直觀且舒適的操作體驗。
 
-2.  **AI 智慧解題** 調用 Gemini 2.5 Flash 模型，自動讀取題目敘述並生成符合規範的回應。
+2.  **自選 AI 模型（Gemini、ChatGPT、Claude、Custom）** 可自訂任何相容 OpenAI 格式的 API 端點。
+
+2.  **AI 智慧解題** 調用 AI 模型，自動讀取題目敘述並生成符合規範的回應。
 
 3.  **全自動化互動流程**
       - **自動登入**：自動處理 Modal 彈窗登入。
@@ -31,6 +33,65 @@
   - **Google Generative AI (Gemini SDK)** 用於理解程式題目並生成解答。
   - **CustomTkinter** 基於 Tkinter 的現代化 UI 庫，實現簡約介面。
   - **PyInstaller** 用於將 Python 腳本打包為獨立 EXE 執行檔。
+
+-----
+
+##  技術細節
+
+### API 整合架構
+
+```
+main.py (UI)
+    ↓
+browser_bot.py (爬蟲邏輯)
+    ↓
+ai_engine.py (AI 呼叫)
+    ↓
+[Gemini | ChatGPT | Claude | Custom API]
+```
+
+### ai_engine.py 函式簽章
+
+```python
+def solve_challenge(
+    api_key: str,
+    problem_text: str,
+    language: str = "Java",
+    provider: str = "gemini",
+    model_name: str = None,
+    custom_endpoint: str = None
+) -> Tuple[bool, str]
+```
+
+**參數說明**：
+- `api_key`: API 金鑰
+- `problem_text`: 題目描述文字
+- `language`: 程式語言（預設 Java）
+- `provider`: AI 提供商（`gemini` | `chatgpt` | `claude` | `custom`）
+- `model_name`: 模型名稱（可選，使用預設值若未提供）
+- `custom_endpoint`: 自訂 API 端點（僅 `provider="custom"` 時需要）
+
+**回傳值**：
+- `(True, code_string)`: 成功，回傳生成的程式碼
+- `(False, error_message)`: 失敗，回傳錯誤訊息
+
+-----
+
+## 自訂 API 端點範例
+
+### LocalAI（本地部署）
+```
+端點: http://localhost:8080/v1/chat/completions
+模型: gpt-3.5-turbo (或您部署的模型名稱)
+API Key: 可留空或填入本地設定的 token
+```
+
+### Ollama（透過 OpenAI 相容層）
+```
+端點: http://localhost:11434/v1/chat/completions
+模型: llama2 (或您下載的模型)
+API Key: 可留空
+```
 
 -----
 
@@ -82,7 +143,9 @@ python main.py
 1.  **填寫參數**：
     在 GUI 介面上依序填入：
 
-      - **API KEY**：您的 Gemini API Key (前往 [Google AI Studio](https://aistudio.google.com/) 免費獲取)。
+      - **AI PROVIDER**：選擇您的 AI 模型提供商。
+      - **AI MODEL**：選擇您想使用的 AI 模型。
+      - **API KEY**：您的 AI API Key (例如 [Google AI Studio](https://aistudio.google.com/))。
       - **CONTEST URL**：目標題組網址 (例如 `https://.../contest/227/`)。
       - **USERNAME / PASSWORD**：您的 OJ 登入帳號與密碼。
 
@@ -92,7 +155,7 @@ python main.py
 3.  **自動化執行**：
 
       - 程式將自動開啟瀏覽器並登入。
-      - 掃描所有「未提交」的題目。
+      - 掃描該題組內所有「未提交」的題目。
       - 逐題進行 AI 解題與提交。
       - 結果將即時顯示於下方的日誌區 (Log Area)。
 
