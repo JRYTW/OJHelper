@@ -1,4 +1,7 @@
 customtkinter
 selenium
 google-generativeai
+openai
+anthropic
+requests
 packaging

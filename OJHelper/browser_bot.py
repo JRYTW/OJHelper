@@ -85,9 +85,10 @@ class OJBot:
             
         return links
 
-    def process_question(self, url, ai_solver_func, api_key):
+    def process_question(self, url, ai_solver_func, api_key, provider="gemini", model_name=None, custom_endpoint=None):
         """ 
         使用 JS 強制點擊提交按鈕 + 置中捲動 
+        支援多種 AI 提供商
         """
         result_log = {"url": url, "status": "Fail", "msg": ""}
         
@@ -100,7 +101,14 @@ class OJBot:
             problem_text = desc_elem.text
             
             # 2. 呼叫 AI
-            success, ai_code = ai_solver_func(api_key, problem_text, language="Java")
+            success, ai_code = ai_solver_func(
+                api_key, 
+                problem_text, 
+                language="Java",
+                provider=provider,
+                model_name=model_name,
+                custom_endpoint=custom_endpoint
+            )
             
             if not success:
                 raise Exception(f"AI 生成失敗: {ai_code}")
